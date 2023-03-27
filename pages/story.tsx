@@ -1,5 +1,5 @@
 import Page from "@/components/page";
 
-const Story = () => <Page></Page>;
+const Story = () => <Page>x</Page>;
 
 export default Story;
