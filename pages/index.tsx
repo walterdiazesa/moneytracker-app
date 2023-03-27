@@ -56,7 +56,7 @@ const Index = () => {
     <Page title="Transacciones" className="pb-20">
       <MonthPicker />
       {isLoading && (
-        <div className="mb-3 px-8">
+        <div className="mb-3 px-8 transition-opacity">
           <div className="flex items-center justify-center rounded-md bg-gray-300 py-2 text-sm text-white">
             <ArrowPathIcon
               className="mr-2 animate-spin"
