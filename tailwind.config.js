@@ -6,7 +6,11 @@ module.exports = {
     "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extends: {},
+    extend: {
+      colors: {
+        "theme-dark": "#1d2020",
+      },
+    },
   },
   darkMode: "class",
   plugins: [require("tailwindcss-safe-area")],
