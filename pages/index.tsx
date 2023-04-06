@@ -2,17 +2,18 @@
 import MonthPicker from "@/components/MonthPicker";
 import Page from "@/components/page";
 import Transaction from "@/components/Transaction";
+import DaySpend from "@/components/DaySpend";
 import { TransactionContext } from "@/context";
 import { getTransactionFromMonth } from "@/fetch";
-import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ProgressBar } from "@tremor/react";
 import {
   getExpendedFromTransactions,
   getRemainingFromTransactions,
 } from "@/utils";
 import { MONEY_TRACKER_API, MONTHLY_SAVING_GOAL } from "@/constants";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { Transaction as TransactionType } from "@/ts";
+import Spinner from "@/components/Icons/Spinner";
 
 const Index = () => {
   const [
@@ -56,6 +57,8 @@ const Index = () => {
     );
   }, [lastSelectedMonth]);
 
+  const [isCreatingTransaction, setIsCreatingTransaction] = useState(false);
+
   return (
     <Page title="Transacciones" className="pb-20">
       <div
@@ -64,25 +67,41 @@ const Index = () => {
           isTransactionModalOpen ? "translate-y-0" : "translate-y-full"
         } bg-theme-dark px-8 py-16`}
       >
-        <input id="title" placeholder="title" className="mb-2 w-full" />
+        <input
+          id="title"
+          placeholder="Título"
+          className="mb-2 w-full rounded-md px-2 py-1"
+        />
         <input
           id="purchaseDate"
           placeholder="purchaseDate"
           type="datetime-local"
-          className="my-2 w-full"
+          className="my-2 w-full rounded-md px-2 py-1"
         />
         <input
           id="from"
           placeholder="from"
-          className="my-2 w-full"
+          className="my-2 w-full rounded-md px-2 py-1"
           defaultValue="💵"
         />
-        <select id="type" className="my-2 w-full">
+        <select
+          id="type"
+          className="my-2 w-full appearance-none rounded-md px-2 py-1"
+        >
           <option value="minus">Gasto</option>
           <option value="plus">Ingreso</option>
         </select>
-        <input id="amount" placeholder="amount" className="my-2 w-full" />
-        <select id="categoryId" className="my-2 w-full">
+        <input
+          id="amount"
+          placeholder="Cantidad"
+          type="number"
+          inputMode="decimal"
+          className="my-2 w-full rounded-md px-2 py-1"
+        />
+        <select
+          id="categoryId"
+          className="my-2 w-full appearance-none rounded-md px-2 py-1"
+        >
           <option value={1}>🃏 Miscelánea</option>
           <option value={2}>🥖 Alimentos</option>
           <option value={3}>🍣 Restaurante</option>
@@ -95,10 +114,11 @@ const Index = () => {
           <option value={10}>🏠 Hospedaje</option>
           <option value={11}>💸 Income</option>
         </select>
-        <input
-          type="button"
-          value="Crear"
-          className="my-2 w-full bg-blue-500"
+        <button
+          disabled={isCreatingTransaction}
+          className={`my-2 flex w-full items-center justify-center rounded-md bg-blue-500 py-1.5 ${
+            isCreatingTransaction ? "bg-sky-400" : "hover:bg-blue-600"
+          }`}
           onClick={async () => {
             const form =
               document.querySelector("#transaction_modal")?.childNodes;
@@ -117,6 +137,7 @@ const Index = () => {
             transactionBody["owner"] = "walterwalon@gmail.com";
             transactionBody["currency"] = "USD";
             try {
+              setIsCreatingTransaction(true);
               let res = await fetch(`${MONEY_TRACKER_API}transaction/`, {
                 method: "POST",
                 mode: "cors",
@@ -131,14 +152,25 @@ const Index = () => {
               console.error({ e });
               alert(JSON.stringify(e));
             } finally {
+              setIsCreatingTransaction(false);
               setTransactionContext({ isTransactionModalOpen: false });
             }
           }}
-        />
+        >
+          {isCreatingTransaction ? (
+            <>
+              <Spinner className="mr-2 h-4 w-4 text-white" />
+              Creando...
+            </>
+          ) : (
+            <>Crear</>
+          )}
+        </button>
         <input
           type="button"
           value="Cancelar"
-          className="my-2 w-full bg-gray-400"
+          disabled={isCreatingTransaction}
+          className="my-2 w-full rounded-md bg-gray-400 py-1.5 hover:bg-gray-500"
           onClick={() =>
             setTransactionContext({ isTransactionModalOpen: false })
           }
@@ -148,11 +180,7 @@ const Index = () => {
       {isLoading && (
         <div className="mb-3 px-8">
           <div className="flex items-center justify-center rounded-md bg-gray-300 py-2 text-sm text-white">
-            <ArrowPathIcon
-              className="mr-2 animate-spin"
-              width={18}
-              height={18}
-            />
+            <Spinner className="mr-2 h-4 w-4 text-white" />
             Obteniendo transacciones actualizadas
           </div>
         </div>
@@ -188,7 +216,10 @@ const Index = () => {
           />
         </div>
       </div>
-      <div key={lastSelectedMonth.getMonth()}>
+      <div
+        {...(isTransactionModalOpen && { className: "fixed w-full" })}
+        key={lastSelectedMonth.getMonth()}
+      >
         {Object.entries(
           lastTransactions.groupBy(({ purchaseDate }) =>
             new Date(purchaseDate).getDate()
@@ -203,6 +234,7 @@ const Index = () => {
                     day: "2-digit",
                     weekday: "short",
                   }).format(new Date(lastSelectedMonth.clone().setDate(+day)))}
+                  <DaySpend dayTransactions={dayTransactions} />
                 </div>
                 {dayTransactions.map((transaction) => (
                   <Transaction key={transaction.id} transaction={transaction} />

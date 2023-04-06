@@ -52,7 +52,12 @@ const index = ({ transaction }: { transaction: Transaction }) => {
           >
             {/* @ts-ignore */}
             {CURRENCY_MAP[transaction.currency] ?? transaction.currency}
-            {transaction.amount}
+            {Intl.NumberFormat("en", {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: Number.isInteger(+transaction.amount)
+                ? 0
+                : 2,
+            }).format(+transaction.amount)}
           </div>
         </div>
       </div>
