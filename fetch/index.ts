@@ -1,7 +1,7 @@
 import { MONEY_TRACKER_API } from "@/constants";
 import { Transaction } from "@/ts";
 
-const transactionCache: Record<string, any> =
+const transactionCache: Record<string, Transaction[]> =
   typeof localStorage !== "undefined" &&
   localStorage.getItem("transactionCache")
     ? JSON.parse(localStorage.getItem("transactionCache")!)
@@ -33,7 +33,34 @@ const requestCache = async (
         error,
       }
     );
+    return [];
   }
+};
+
+/**
+ *
+ * @param transaction The transaction that will be incrusted inside the cache
+ * @returns Return the entries of the transactionCache key that was revalidated
+ */
+export const revalidateCache = (transaction: Transaction): Transaction[] => {
+  const key = new Date(transaction.purchaseDate)
+    .getAbsMonth("begin")
+    .toISOString();
+  if (!transactionCache.hasOwnProperty(key)) {
+    transactionCache[key] = [transaction];
+  } else {
+    transactionCache[key].splice(
+      transactionCache[key].findIndex(
+        ({ purchaseDate }) =>
+          new Date(purchaseDate) <= new Date(transaction.purchaseDate)
+      ),
+      0,
+      transaction
+    );
+  }
+  if (new Date().getAbsMonth("begin").toISOString() !== key)
+    localStorage.setItem("transactionCache", JSON.stringify(transactionCache));
+  return transactionCache[key];
 };
 
 export const getTransactionFromMonth = async (
