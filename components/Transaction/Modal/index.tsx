@@ -50,7 +50,7 @@ const TransactionModal = () => {
         id="purchaseDate"
         placeholder="purchaseDate"
         type="datetime-local"
-        className="my-2 w-full rounded-md px-2 py-1"
+        className="my-2 min-w-full rounded-md px-2 py-1"
       />
       <input
         id="from"
@@ -70,11 +70,10 @@ const TransactionModal = () => {
         placeholder="Cantidad"
         type="number"
         inputMode="decimal"
-        className="absolute h-0" // my-2 w-full rounded-md px-2 py-1
+        className="absolute max-h-0" // my-2 w-full rounded-md px-2 py-1
         onInput={({ target: { value }, nativeEvent: { data } }: any) =>
           setAmount(`${value}${data === "." ? "." : ""}` || "0")
         }
-        tabIndex={-1}
         onKeyDown={(e) => {
           if (e.key === "Tab") {
             e.preventDefault();
@@ -107,8 +106,8 @@ const TransactionModal = () => {
           const form = document.querySelector("#transaction_modal")!.childNodes;
           const transactionBody = {} as Transaction;
           for (const { id, value } of Array.from(form).slice(
-            0,
-            6
+            1,
+            7
           ) as (HTMLInputElement & { id: keyof Transaction })[]) {
             if (!value) return alert(`Campo "${id}" no puede quedar vacío`);
             // @ts-ignore
