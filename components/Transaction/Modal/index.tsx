@@ -3,7 +3,7 @@ import { MONEY_TRACKER_API } from "@/constants";
 import { TransactionContext } from "@/context";
 import { revalidateCache } from "@/fetch";
 import { Transaction } from "@/ts";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 const TransactionModal = () => {
   const [{ lastSelectedMonth, isTransactionModalOpen }, setTransactionContext] =
@@ -27,6 +27,14 @@ const TransactionModal = () => {
     }
   }, [isTransactionModalOpen]);
 
+  const getInitialPurchaseDate = useCallback(() => {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    now.setMilliseconds(0);
+    now.setSeconds(0);
+    return now.toISOString().slice(0, -1);
+  }, []);
+
   return (
     <div
       id="transaction_modal"
@@ -46,11 +54,28 @@ const TransactionModal = () => {
         placeholder="Título"
         className="mb-2 w-full rounded-md px-2 py-1"
       />
+      <select
+        id="categoryId"
+        className="my-2 w-full appearance-none rounded-md px-2 py-1"
+      >
+        <option value={1}>🃏 Miscelánea</option>
+        <option value={2}>🥖 Alimentos</option>
+        <option value={3}>🍣 Restaurante</option>
+        <option value={4}>🏋️‍♂️ Gimnasio</option>
+        <option value={5}>🧼 Belleza</option>
+        <option value={6}>🍾 Salidas</option>
+        <option value={7}>🏂 Experiencias</option>
+        <option value={8}>🚈 Transporte</option>
+        <option value={9}>🛍 Ropa</option>
+        <option value={10}>🏠 Hospedaje</option>
+        <option value={11}>💸 Income</option>
+      </select>
       <input
         id="purchaseDate"
         placeholder="purchaseDate"
         type="datetime-local"
-        className="my-2 min-w-full rounded-md px-2 py-1"
+        className="my-2 min-w-full max-w-full rounded-md py-1 px-2"
+        defaultValue={getInitialPurchaseDate()}
       />
       <input
         id="from"
@@ -70,7 +95,7 @@ const TransactionModal = () => {
         placeholder="Cantidad"
         type="number"
         inputMode="decimal"
-        className="absolute max-h-0" // my-2 w-full rounded-md px-2 py-1
+        className="absolute max-h-0 max-w-0" // my-2 w-full rounded-md px-2 py-1
         onInput={({ target: { value }, nativeEvent: { data } }: any) =>
           setAmount(`${value}${data === "." ? "." : ""}` || "0")
         }
@@ -81,22 +106,6 @@ const TransactionModal = () => {
           }
         }}
       />
-      <select
-        id="categoryId"
-        className="my-2 w-full appearance-none rounded-md px-2 py-1"
-      >
-        <option value={1}>🃏 Miscelánea</option>
-        <option value={2}>🥖 Alimentos</option>
-        <option value={3}>🍣 Restaurante</option>
-        <option value={4}>🏋️‍♂️ Gimnasio</option>
-        <option value={5}>🧼 Belleza</option>
-        <option value={6}>🍾 Salidas</option>
-        <option value={7}>🏂 Experiencias</option>
-        <option value={8}>🚈 Transporte</option>
-        <option value={9}>🛍 Ropa</option>
-        <option value={10}>🏠 Hospedaje</option>
-        <option value={11}>💸 Income</option>
-      </select>
       <button
         disabled={isCreatingTransaction}
         className={`my-2 flex w-full items-center justify-center rounded-md bg-blue-500 py-1.5 ${
