@@ -74,7 +74,7 @@ const TransactionModal = () => {
         id="purchaseDate"
         placeholder="purchaseDate"
         type="datetime-local"
-        className="my-2 min-w-full max-w-full rounded-md py-1 px-2"
+        className="my-2 min-w-[calc(100%-16px)] rounded-md py-1 px-2"
         defaultValue={getInitialPurchaseDate()}
       />
       <input
@@ -96,9 +96,7 @@ const TransactionModal = () => {
         type="number"
         inputMode="decimal"
         className="absolute max-h-0 max-w-0" // my-2 w-full rounded-md px-2 py-1
-        onInput={({ target: { value }, nativeEvent: { data } }: any) =>
-          setAmount(`${value}${data === "." ? "." : ""}` || "0")
-        }
+        onInput={({ target: { value } }: any) => setAmount(value || "0")}
         onKeyDown={(e) => {
           if (e.key === "Tab") {
             e.preventDefault();
