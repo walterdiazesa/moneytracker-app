@@ -140,10 +140,14 @@ const TransactionModal = () => {
               body: JSON.stringify(transactionBody),
             });
             const transaction: Transaction = await res.json();
-            const revalidateHelper = revalidateCache(transaction);
+            const { mutatedMonth, transactions: revalidateHelper } =
+              revalidateCache(transaction);
+            const lastMonthKey = lastSelectedMonth
+              .getAbsMonth("begin")
+              .toISOString();
             if (
-              lastSelectedMonth.getAbsMonth("begin").toISOString() ===
-              new Date().getAbsMonth("begin").toISOString()
+              mutatedMonth === lastMonthKey && // Actual condition, we are seeing the same month as the mutated month
+              lastMonthKey === new Date().getAbsMonth("begin").toISOString() // Avoid redundant re-render
             )
               setTransactionContext({ lastTransactions: revalidateHelper });
             setTransactionContext({ isTransactionModalOpen: false });
