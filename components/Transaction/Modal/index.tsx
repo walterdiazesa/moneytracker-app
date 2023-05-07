@@ -48,6 +48,8 @@ const TransactionModal = () => {
       selectFormInput("title").value = fromTransaction?.title || "";
       selectFormInput("categoryId").value = fromTransaction?.categoryId || 1;
       selectFormInput("type").value = fromTransaction?.type || "minus";
+      selectFormInput("from").value =
+        fromTransaction?.from === "CASH" ? "💵" : fromTransaction?.from || "💵";
       //console.log(document.querySelector("#transaction_modal>#amount"));
     } else {
       transKey.current = Date.now();
@@ -190,11 +192,6 @@ const TransactionModal = () => {
           id="from"
           placeholder="from"
           className="my-2 w-full rounded-md px-2 py-1"
-          defaultValue={
-            fromTransaction?.from === "CASH"
-              ? "💵"
-              : fromTransaction?.from || "💵"
-          }
         />
         <select
           id="type"
@@ -252,7 +249,7 @@ const TransactionModal = () => {
       {fromTransaction && (
         <button
           disabled={!!isMutatingTransaction}
-          className={`flex w-full items-center justify-center rounded-md py-1.5 ${
+          className={`mb-8 flex w-full items-center justify-center rounded-md py-1.5 ${
             isMutatingTransaction && isMutatingTransaction === "DELETE"
               ? "bg-red-300"
               : "bg-red-400 hover:bg-red-500"
