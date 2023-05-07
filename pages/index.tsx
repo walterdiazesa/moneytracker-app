@@ -68,7 +68,7 @@ const Index = () => {
       }
     }
 
-    function isPullDown(dY, dX) {
+    function isPullDown(dY: any, dX: any) {
       // methods of checking slope, length, direction of line created by swipe action
       return (
         dY < 0 &&
@@ -77,7 +77,7 @@ const Index = () => {
       );
     }
 
-    function swipeStart(e) {
+    function swipeStart(e: any) {
       if (typeof e["targetTouches"] !== "undefined") {
         var touch = e.targetTouches[0];
         pStart.x = touch.screenX;
@@ -88,7 +88,7 @@ const Index = () => {
       }
     }
 
-    function swipeEnd(e) {
+    function swipeEnd(e: any) {
       if (typeof e["changedTouches"] !== "undefined") {
         var touch = e.changedTouches[0];
         pStop.x = touch.screenX;
@@ -101,10 +101,10 @@ const Index = () => {
       swipeCheck();
     }
 
-    const touchStart = function (e) {
+    const touchStart = function (e: any) {
       swipeStart(e);
     };
-    const touchEnd = function (e) {
+    const touchEnd = function (e: any) {
       swipeEnd(e);
     };
 
