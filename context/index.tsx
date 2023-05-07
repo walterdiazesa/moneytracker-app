@@ -5,5 +5,5 @@ import createFastContext from "./FastContext";
 export const TransactionContext = createFastContext({
   lastSelectedMonth: new Date(),
   lastTransactions: [] as Transaction[],
-  isTransactionModalOpen: false,
+  isTransactionModalOpen: false as boolean | { transaction: Transaction },
 });

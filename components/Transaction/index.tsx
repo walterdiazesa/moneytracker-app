@@ -1,11 +1,20 @@
+import { TransactionContext } from "@/context";
 import { Transaction } from "@/ts";
 import React from "react";
 
 const CURRENCY_MAP = Object.freeze({ USD: "$", EUR: "€", ALL: "lek" } as const);
 
 const index = ({ transaction }: { transaction: Transaction }) => {
+  const [, setTransactionContext] = TransactionContext.useStore(
+    (store) => store["isTransactionModalOpen"]
+  );
   return (
-    <div className="px-8">
+    <div
+      className="px-8"
+      onClick={() =>
+        setTransactionContext({ isTransactionModalOpen: { transaction } })
+      }
+    >
       <div className="my-2 flex w-full justify-between rounded-md bg-blue-500 p-2">
         <div className="flex truncate">
           <div

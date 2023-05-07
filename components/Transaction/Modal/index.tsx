@@ -3,32 +3,49 @@ import { MONEY_TRACKER_API } from "@/constants";
 import { TransactionContext } from "@/context";
 import { revalidateCache } from "@/fetch";
 import { Transaction } from "@/ts";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+
+type TransactionFormKey = Exclude<
+  keyof Transaction,
+  "category" | "id" | "orCurrency" | "orAmount"
+>;
 
 const TransactionModal = () => {
   const [{ lastSelectedMonth, isTransactionModalOpen }, setTransactionContext] =
     TransactionContext.useStore((store) => store);
 
+  const transKey = useRef(Date.now());
+
+  const fromTransaction =
+    (isTransactionModalOpen &&
+      typeof isTransactionModalOpen === "object" &&
+      isTransactionModalOpen.transaction) ||
+    undefined;
+
   const [isCreatingTransaction, setIsCreatingTransaction] = useState(false);
 
   const [amount, setAmount] = useState("0");
 
-  const focusFormInput = (inputId: string) =>
-    (
-      document.querySelector(
-        `#transaction_modal>#${inputId}`
-      ) as HTMLInputElement
-    ).focus();
+  const selectFormInput = (inputId: TransactionFormKey) =>
+    document.querySelector(
+      `#transaction_modal>#${inputId}`
+    ) as HTMLInputElement;
+  const focusFormInput = (inputId: TransactionFormKey) =>
+    selectFormInput(inputId).focus();
 
   useEffect(() => {
     if (isTransactionModalOpen) {
       focusFormInput("amount");
+      setAmount(fromTransaction?.amount || "0");
+      selectFormInput("title").value = fromTransaction?.title || "";
       //console.log(document.querySelector("#transaction_modal>#amount"));
+    } else {
+      transKey.current = Date.now();
     }
   }, [isTransactionModalOpen]);
 
-  const getInitialPurchaseDate = useCallback(() => {
-    const now = new Date();
+  const getInitialPurchaseDate = useCallback((overrideDate?: string) => {
+    const now = overrideDate ? new Date(overrideDate) : new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     now.setMilliseconds(0);
     now.setSeconds(0);
@@ -57,6 +74,7 @@ const TransactionModal = () => {
       <select
         id="categoryId"
         className="my-2 w-full appearance-none rounded-md px-2 py-1"
+        value={fromTransaction?.categoryId || 1}
       >
         <option value={1}>🃏 Miscelánea</option>
         <option value={2}>🥖 Alimentos</option>
@@ -75,17 +93,22 @@ const TransactionModal = () => {
         placeholder="purchaseDate"
         type="datetime-local"
         className="my-2 min-w-[calc(100%-16px)] rounded-md py-1 px-2"
-        defaultValue={getInitialPurchaseDate()}
+        defaultValue={getInitialPurchaseDate(fromTransaction?.purchaseDate)}
       />
       <input
         id="from"
         placeholder="from"
         className="my-2 w-full rounded-md px-2 py-1"
-        defaultValue="💵"
+        defaultValue={
+          fromTransaction?.from === "CASH"
+            ? "💵"
+            : fromTransaction?.from || "💵"
+        }
       />
       <select
         id="type"
         className="my-2 w-full appearance-none rounded-md px-2 py-1"
+        value={fromTransaction?.type || "minus"}
       >
         <option value="minus">Gasto</option>
         <option value="plus">Ingreso</option>
@@ -95,7 +118,9 @@ const TransactionModal = () => {
         placeholder="Cantidad"
         type="number"
         inputMode="decimal"
-        className="absolute max-h-0 max-w-0" // my-2 w-full rounded-md px-2 py-1
+        key={fromTransaction?.id || transKey.current}
+        className="absolute max-h-0 max-w-0"
+        defaultValue={fromTransaction?.amount}
         onInput={({ target: { value } }: any) => setAmount(value || "0")}
         onKeyDown={(e) => {
           if (e.key === "Tab") {
@@ -115,30 +140,51 @@ const TransactionModal = () => {
           for (const { id, value } of Array.from(form).slice(
             1,
             7
-          ) as (HTMLInputElement & { id: keyof Transaction })[]) {
-            if (!value) return alert(`Campo "${id}" no puede quedar vacío`);
-            // @ts-ignore
-            transactionBody[id] =
-              value === "💵"
-                ? "CASH"
-                : id === "purchaseDate"
-                ? new Date(value)
-                : Number.isFinite(+value)
-                ? +value
-                : value;
+          ) as (HTMLInputElement & { id: TransactionFormKey })[]) {
+            console.log({ value });
+            if (!value && id !== "amount")
+              return alert(`Campo "${id}" no puede quedar vacío`);
+            switch (id) {
+              case "amount":
+                transactionBody["amount"] = (value || "0") as `${number}`;
+                break;
+              case "categoryId":
+                transactionBody["categoryId"] = +value;
+                break;
+              case "from":
+                transactionBody["from"] =
+                  value === "💵" ? "CASH" : (value as `${number}`);
+                break;
+              case "purchaseDate":
+                transactionBody["purchaseDate"] = new Date(value).toISOString();
+                break;
+              case "title":
+              case "type":
+                transactionBody[id] = value as any;
+                break;
+            }
           }
           transactionBody["owner"] = "walterwalon@gmail.com";
           transactionBody["currency"] = "USD";
+
+          const { category, ...transactionPayload } = {
+            ...fromTransaction,
+            ...transactionBody,
+          };
+
           try {
             setIsCreatingTransaction(true);
-            const res = await fetch(`${MONEY_TRACKER_API}transaction/`, {
-              method: "POST",
-              mode: "cors",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(transactionBody),
-            });
+            const res = await fetch(
+              `${MONEY_TRACKER_API}transaction/${fromTransaction?.id || ""}`,
+              {
+                method: fromTransaction ? "PATCH" : "POST",
+                mode: "cors",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(transactionPayload),
+              }
+            );
             const transaction: Transaction = await res.json();
             const { mutatedMonth, transactions: revalidateHelper } =
               revalidateCache(transaction);
@@ -162,10 +208,10 @@ const TransactionModal = () => {
         {isCreatingTransaction ? (
           <>
             <Spinner className="mr-2 h-4 w-4 text-white" />
-            Creando...
+            {fromTransaction ? "Guardando..." : "Creando..."}
           </>
         ) : (
-          <>Crear</>
+          <>{fromTransaction ? "Guardar" : "Crear"}</>
         )}
       </button>
       <input

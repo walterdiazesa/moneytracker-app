@@ -52,12 +52,16 @@ export const revalidateCache = (
   if (!transactionCache.hasOwnProperty(key)) {
     transactionCache[key] = [transaction];
   } else {
+    let updateTransaction = false;
     transactionCache[key].splice(
-      transactionCache[key].findIndex(
-        ({ purchaseDate }) =>
+      transactionCache[key].findIndex(({ purchaseDate, id }) => {
+        if (transaction.id === id) updateTransaction = true;
+        return (
+          updateTransaction ||
           new Date(purchaseDate) <= new Date(transaction.purchaseDate)
-      ),
-      0,
+        );
+      }),
+      Number(updateTransaction),
       transaction
     );
   }
