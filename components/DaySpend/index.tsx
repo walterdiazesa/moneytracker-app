@@ -1,4 +1,5 @@
 import { Transaction } from "@/ts";
+import { currencyFormatter } from "@/utils";
 import React, { useMemo } from "react";
 
 const index = ({ dayTransactions }: { dayTransactions: Transaction[] }) => {
@@ -21,11 +22,7 @@ const index = ({ dayTransactions }: { dayTransactions: Transaction[] }) => {
           : "text-red-300"
       }`}
     >
-      {spendPerDay < 0 && "-"}$
-      {Intl.NumberFormat("en", {
-        maximumFractionDigits: 2,
-        minimumFractionDigits: Number.isInteger(spendPerDay) ? 0 : 2,
-      }).format(Math.abs(spendPerDay))}
+      {spendPerDay < 0 && "-"}${currencyFormatter(spendPerDay)}
     </span>
   );
 };

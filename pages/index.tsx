@@ -3,16 +3,16 @@ import Page from "@/components/page";
 import Transaction from "@/components/Transaction";
 import DaySpend from "@/components/DaySpend";
 import { TransactionContext } from "@/context";
-import { getTransactionFromMonth, revalidateCache } from "@/fetch";
-import { useEffect, useMemo, useState } from "react";
-import { ProgressBar } from "@tremor/react";
-import {
-  getExpendedFromTransactions,
-  getRemainingFromTransactions,
-} from "@/utils";
-import { MONTHLY_SAVING_GOAL } from "@/constants";
+import { getTransactionFromMonth, invalidateCache } from "@/fetch";
+import { useEffect, useState } from "react";
 import Spinner from "@/components/Icons/Spinner";
 import TransactionModal from "@/components/Transaction/Modal";
+import {
+  mountSwipeDownEvents,
+  unmountSwipeDownEvents,
+} from "@/utils/gestures/swipe";
+import MonthOverview from "@/components/Transaction/Chart/MonthOverview";
+import CategorySummary from "@/components/Transaction/Chart/CategorySummary";
 
 const Index = () => {
   const [
@@ -31,95 +31,20 @@ const Index = () => {
       .finally(() => setIsLoading(false));
   }, [lastSelectedMonth]);
 
-  const remaining = useMemo(
-    () => +getRemainingFromTransactions(lastTransactions).toFixed(2),
-    [lastTransactions]
-  );
-  const expended = useMemo(
-    () => +getExpendedFromTransactions(lastTransactions).toFixed(2),
-    [lastTransactions]
-  );
-  const remainingDays = useMemo(() => {
-    const selectedMonthDays = new Date(
-      Date.UTC(
-        lastSelectedMonth.getFullYear(),
-        lastSelectedMonth.getMonth() + 1,
-        0
-      )
-    );
-    return Math.max(
-      Math.min(
-        selectedMonthDays.diff(new Date(), "day") * -1,
-        selectedMonthDays.getDate()
-      ),
-      0
-    );
-  }, [lastSelectedMonth]);
-
   useEffect(() => {
-    const pStart = { x: 0, y: 0 };
-    const pStop = { x: 0, y: 0 };
-
-    function swipeCheck() {
-      var changeY = pStart.y - pStop.y;
-      var changeX = pStart.x - pStop.x;
-      if (isPullDown(changeY, changeX)) {
-        alert("Swipe Down!");
-      }
-    }
-
-    function isPullDown(dY: any, dX: any) {
-      // methods of checking slope, length, direction of line created by swipe action
-      return (
-        dY < 0 &&
-        ((Math.abs(dX) <= 100 && Math.abs(dY) >= 300) ||
-          (Math.abs(dX) / Math.abs(dY) <= 0.3 && dY >= 60))
-      );
-    }
-
-    function swipeStart(e: any) {
-      if (typeof e["targetTouches"] !== "undefined") {
-        var touch = e.targetTouches[0];
-        pStart.x = touch.screenX;
-        pStart.y = touch.screenY;
-      } else {
-        pStart.x = e.screenX;
-        pStart.y = e.screenY;
-      }
-    }
-
-    function swipeEnd(e: any) {
-      if (typeof e["changedTouches"] !== "undefined") {
-        var touch = e.changedTouches[0];
-        pStop.x = touch.screenX;
-        pStop.y = touch.screenY;
-      } else {
-        pStop.x = e.screenX;
-        pStop.y = e.screenY;
-      }
-
-      swipeCheck();
-    }
-
-    const touchStart = function (e: any) {
-      swipeStart(e);
-    };
-    const touchEnd = function (e: any) {
-      swipeEnd(e);
-    };
-
-    document.addEventListener("touchstart", touchStart, false);
-    document.addEventListener("touchend", touchEnd, false);
+    const touchEndHandler = mountSwipeDownEvents(() => {
+      invalidateCache(lastSelectedMonth.toISOString());
+      setTransactionContext({
+        lastSelectedMonth: lastSelectedMonth.clone(),
+      });
+    });
     return () => {
-      document.removeEventListener("touchstart", touchStart, false);
-      document.removeEventListener("touchend", touchEnd, false);
+      unmountSwipeDownEvents(touchEndHandler);
     };
-  }, []);
+  }, [lastSelectedMonth]);
 
   return (
     <Page title="Transacciones" className="pb-20">
-      <div className=" -mt-4 h-4 w-full bg-red-500">x</div>
-      <div className=" -mt-4 h-8 w-full bg-yellow-500">x</div>
       <TransactionModal />
       <MonthPicker />
       {isLoading && (
@@ -130,37 +55,8 @@ const Index = () => {
           </div>
         </div>
       )}
-      <div className="px-8">
-        <div className="mb-3 w-full rounded-md bg-blue-500 p-2">
-          <p className="text-xs">Ahorro este mes</p>
-          <p>
-            {remaining < 0 && "-"}${Math.abs(remaining)}
-            <span className="ml-2 text-xs">{remainingDays} días restantes</span>
-          </p>
-          <div className="mt-4 flex justify-between text-xs">
-            <p>Meta de ahorro</p>
-            <p>
-              ${expended | 0} / ${MONTHLY_SAVING_GOAL} ($
-              {Math.abs((MONTHLY_SAVING_GOAL - expended) | 0)}{" "}
-              {expended > MONTHLY_SAVING_GOAL ? "por encima" : "restantes"})
-            </p>
-          </div>
-          <ProgressBar
-            color={
-              (expended / MONTHLY_SAVING_GOAL) * 100 < 40
-                ? "emerald"
-                : (expended / MONTHLY_SAVING_GOAL) * 100 < 60
-                ? "lime"
-                : (expended / MONTHLY_SAVING_GOAL) * 100 < 80
-                ? "amber"
-                : "red"
-            }
-            percentageValue={(expended / MONTHLY_SAVING_GOAL) * 100}
-            className="mt-2"
-            showAnimation
-          />
-        </div>
-      </div>
+      <MonthOverview />
+      <CategorySummary key="CategorySummary" />
       <div
         {...(isTransactionModalOpen && { className: "fixed w-full" })}
         key={lastSelectedMonth.getMonth()}

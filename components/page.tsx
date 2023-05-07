@@ -16,13 +16,7 @@ const Page = ({ title, children, className }: Props) => {
         </Head>
       )}
 
-      <main
-        /**
-         * Padding top = `appbar` height
-         * Padding bottom = `bottom-nav` height
-         */
-        className="mx-auto max-w-screen-md px-safe sm:pb-0"
-      >
+      <main className="mx-auto max-w-screen-md px-safe sm:pb-0">
         <div {...(className && { className })}>{children}</div>
       </main>
 

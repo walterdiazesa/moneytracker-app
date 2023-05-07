@@ -8,8 +8,14 @@ const transactionCache: Record<string, Transaction[]> =
     ? JSON.parse(localStorage.getItem("transactionCache")!)
     : {};
 
+export const invalidateCache = (key: DateCaster<string>) => {
+  delete transactionCache[key];
+  // localStorage.setItem("transactionCache", JSON.stringify(transactionCache)); // No need
+  // to persist in cache as is going to be persisted from the next function from this function is called
+};
+
 const requestCache = async (
-  key: string,
+  key: DateCaster<string>,
   catchValue: () => Promise<Response>
 ) => {
   // If exist, but if it's current month: revalidate
@@ -41,10 +47,13 @@ const requestCache = async (
 /**
  *
  * @param transaction The transaction that will be incrusted inside the cache
- * @returns Return the entries of the transactionCache key that was revalidated
+ * @returns {Object} revalidateCache
+ * @returns {Object} revalidateCache.transactions Return the __reference__ of the entries of the transactionCache key that was revalidated
+ * @returns {string} revalidateCache.mutatedMonth Return the key of the mutated month
  */
 export const revalidateCache = (
-  transaction: Transaction
+  transaction: Transaction,
+  onlyRemove: boolean = false
 ): { transactions: Transaction[]; mutatedMonth: DateCaster<string> } => {
   const key = new Date(transaction.purchaseDate)
     .getAbsMonth("begin")
@@ -62,7 +71,7 @@ export const revalidateCache = (
         );
       }),
       Number(updateTransaction),
-      transaction
+      ...(onlyRemove ? [] : [transaction])
     );
   }
   if (new Date().getAbsMonth("begin").toISOString() !== key)

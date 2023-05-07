@@ -1,4 +1,4 @@
-import { MINIMUM_MONTHLY_INCOME } from "@/constants";
+import { CATEGORIES, MINIMUM_MONTHLY_INCOME } from "@/constants";
 import { Transaction } from "@/ts";
 
 export const getRemainingFromTransactions = (
@@ -20,9 +20,23 @@ export const getRemainingFromTransactions = (
 };
 
 export const getExpendedFromTransactions = (
-  transactions: Transaction[] = []
+  transactions: Transaction[] = [],
+  category?: typeof CATEGORIES[number]["id"]
 ) => {
-  return transactions.reduce((acc, { amount, type }) => {
-    return acc + (type === "minus" ? +amount : 0);
+  return transactions.reduce((acc, { amount, type, categoryId }) => {
+    return (
+      acc +
+      (!category || category === categoryId
+        ? type === "minus"
+          ? +amount
+          : 0
+        : 0)
+    );
   }, 0);
 };
+
+export const currencyFormatter = (number: number) =>
+  Intl.NumberFormat("en", {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: Number.isInteger(number) ? 0 : 2,
+  }).format(Math.abs(number));
