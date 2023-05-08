@@ -41,21 +41,6 @@ const TransactionModal = () => {
   const focusFormInput = (inputId: TransactionFormKey) =>
     selectFormInput(inputId).focus();
 
-  useEffect(() => {
-    if (isTransactionModalOpen) {
-      focusFormInput("amount");
-      setAmount(fromTransaction?.amount || "0");
-      selectFormInput("title").value = fromTransaction?.title || "";
-      selectFormInput("categoryId").value = fromTransaction?.categoryId || 1;
-      selectFormInput("type").value = fromTransaction?.type || "minus";
-      selectFormInput("from").value =
-        fromTransaction?.from === "CASH" ? "💵" : fromTransaction?.from || "💵";
-      //console.log(document.querySelector("#transaction_modal>#amount"));
-    } else {
-      transKey.current = Date.now();
-    }
-  }, [isTransactionModalOpen]);
-
   const getInitialPurchaseDate = useCallback((overrideDate?: string) => {
     const now = overrideDate ? new Date(overrideDate) : new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -63,6 +48,24 @@ const TransactionModal = () => {
     now.setSeconds(0);
     return now.toISOString().slice(0, -1);
   }, []);
+
+  useEffect(() => {
+    if (isTransactionModalOpen) {
+      focusFormInput("amount");
+      setAmount(fromTransaction?.amount || "0");
+      selectFormInput("title").value = fromTransaction?.title || "";
+      selectFormInput("categoryId").value = fromTransaction?.categoryId || 1;
+      selectFormInput("type").value = fromTransaction?.type || "minus";
+      selectFormInput("purchaseDate").value = getInitialPurchaseDate(
+        fromTransaction?.purchaseDate
+      );
+      selectFormInput("from").value =
+        fromTransaction?.from === "CASH" ? "💵" : fromTransaction?.from || "💵";
+      //console.log(document.querySelector("#transaction_modal>#amount"));
+    } else {
+      transKey.current = Date.now();
+    }
+  }, [isTransactionModalOpen]);
 
   const submitTransaction = async (deleteOperation = false) => {
     const transactionBody = {} as Transaction;
@@ -186,7 +189,6 @@ const TransactionModal = () => {
           placeholder="purchaseDate"
           type="datetime-local"
           className="my-2 min-w-[calc(100%-16px)] rounded-md py-1 px-2"
-          defaultValue={getInitialPurchaseDate(fromTransaction?.purchaseDate)}
         />
         <input
           id="from"
