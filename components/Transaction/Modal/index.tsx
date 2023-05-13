@@ -132,11 +132,7 @@ const TransactionModal = () => {
         transaction,
         deleteOperation
       );
-      const lastMonthKey = lastSelectedMonth.getAbsMonth("begin").toISOString();
-      if (
-        mutatedMonth === lastMonthKey && // Actual condition, we are seeing the same month as the mutated month
-        lastMonthKey === new Date().getAbsMonth("begin").toISOString() // Avoid redundant re-render
-      )
+      if (mutatedMonth === lastSelectedMonth.getAbsMonth("begin").toISOString())
         setTransactionContext({
           lastTransactions: [...revalidateHelper],
         });

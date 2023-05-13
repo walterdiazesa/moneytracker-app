@@ -22,7 +22,10 @@ const index = () => {
         <ChevronLeftIcon
           onClick={() =>
             setSelectedDate({
-              lastSelectedMonth: selectedDate.clone().change("month", -1),
+              lastSelectedMonth: selectedDate
+                .clone()
+                .change("month", -1)
+                .getAbsMonth("begin"),
             })
           }
           width={24}
@@ -32,7 +35,10 @@ const index = () => {
         <ChevronRightIcon
           onClick={() =>
             setSelectedDate({
-              lastSelectedMonth: selectedDate.clone().change("month", 1),
+              lastSelectedMonth: selectedDate
+                .clone()
+                .change("month", 1)
+                .getAbsMonth("begin"),
             })
           }
           width={24}
