@@ -95,16 +95,13 @@ export const getTransactionFromMonth = async (
 };
 
 const getLastXMonthsPlusOne = () => {
-  alert(
-    `getLastXMonthsPlusOne portrait? ${
-      window.matchMedia("(orientation: portrait)").matches
-    }`
-  );
-  if (window.screen.orientation?.type.includes("portrait")) return -5;
+  const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+  if (isPortrait) return -5;
   alert(
     `${window.screen.width}, ${window.screen.availWidth}, ${window.screen.height}, ${window.innerWidth}, ${window.innerHeight}`
   );
-  return -5;
+  if (window.innerWidth < 1000) return -8;
+  return -11;
 };
 
 export const getExpenseHistoryWindow = async (): Promise<ExpenseHistory> => {
@@ -126,6 +123,7 @@ export const getTransactionFromFilter = async ({
   from?: Date;
   to?: Date;
 }): Promise<Transaction[]> => {
+  alert("getTransactionFromFilter!");
   const prepareQuery = new URL(`${MONEY_TRACKER_API}transaction/`);
   const preparedFrom =
     from?.toISOString() || new Date(2022, 5).getAbsMonth("begin").toISOString();

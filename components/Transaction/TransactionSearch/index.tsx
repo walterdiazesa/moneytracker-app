@@ -42,9 +42,11 @@ const TransactionSearch = () => {
             ): HTMLInputElement =>
               document.getElementById(`search-${input}`) as HTMLInputElement;
 
-            alert(`getSearchInput("title"): ${getSearchInput("title")}`);
-            alert(`getSearchInput("from"): ${getSearchInput("from")}`);
-            alert(`getSearchInput("to"): ${getSearchInput("to")}`);
+            alert(`getSearchInput("title"): ${getSearchInput("title").value}`);
+            alert(
+              `getSearchInput("from"): ${getSearchInput("from").innerText}`
+            );
+            alert(`getSearchInput("to"): ${getSearchInput("to").innerText}`);
 
             getTransactionFromFilter({
               title: getSearchInput("title").value,
