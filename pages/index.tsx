@@ -5,8 +5,7 @@ import DaySpend from "@/components/DaySpend";
 import { TransactionContext } from "@/context";
 import { getTransactionFromMonth, invalidateCache } from "@/fetch";
 import { useEffect, useState } from "react";
-import Spinner from "@/components/Icons/Spinner";
-import TransactionModal from "@/components/Transaction/Modal";
+import Loader from "@/components/Loader";
 import {
   mountSwipeDownEvents,
   unmountSwipeDownEvents,
@@ -45,16 +44,8 @@ const Index = () => {
 
   return (
     <Page title="Transacciones" className="pb-20">
-      <TransactionModal />
       <MonthPicker />
-      {isLoading && (
-        <div className="mb-3 px-8">
-          <div className="flex items-center justify-center rounded-md bg-gray-300 py-2 text-sm text-white">
-            <Spinner className="mr-2 h-4 w-4 text-white" />
-            Obteniendo transacciones actualizadas
-          </div>
-        </div>
-      )}
+      {isLoading && <Loader label="Obteniendo transacciones actualizadas" />}
       <MonthOverview />
       <CategorySummary key="CategorySummary" />
       <div
@@ -71,10 +62,10 @@ const Index = () => {
             return (
               <div key={day}>
                 <div className="ml-8 text-sm">
-                  {Intl.DateTimeFormat("es", {
+                  {new Date(lastSelectedMonth.clone().setDate(+day)).format({
                     day: "2-digit",
                     weekday: "short",
-                  }).format(new Date(lastSelectedMonth.clone().setDate(+day)))}
+                  })}
                   <DaySpend dayTransactions={dayTransactions} />
                 </div>
                 {dayTransactions.map((transaction) => (

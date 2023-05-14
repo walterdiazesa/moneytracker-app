@@ -44,6 +44,13 @@ Date.prototype.diff = function (date, unit) {
   }
 };
 
+Date.prototype.format = function ({ firstUpperCase, ...options }) {
+  const dateDisplay = Intl.DateTimeFormat("es", options).format(this);
+  if (firstUpperCase)
+    return `${dateDisplay.charAt(0).toUpperCase()}${dateDisplay.slice(1)}`;
+  return dateDisplay;
+};
+
 console.bgRed = "\x1b[41m";
 console.fgWhite = "\x1b[37m";
 console.reset = "\x1b[0m";

@@ -1,5 +1,5 @@
 import { MONEY_TRACKER_API } from "@/constants";
-import { Transaction } from "@/ts";
+import { ExpenseHistory, Transaction } from "@/ts";
 import { DateCaster } from "@/ts/primitives";
 
 const transactionCache: Record<string, Transaction[]> =
@@ -92,4 +92,41 @@ export const getTransactionFromMonth = async (
         .toISOString()}/${date.getAbsMonth("end").toISOString()}`
     )
   );
+};
+
+export const getExpenseHistoryWindow = async (): Promise<ExpenseHistory> => {
+  const expenseHistoryResponse = await fetch(
+    `${MONEY_TRACKER_API}transaction/expenses/${new Date()
+      .change("month", -5)
+      .getAbsMonth("begin")
+      .toISOString()}/${new Date().getAbsMonth("end").toISOString()}`
+  );
+  return await expenseHistoryResponse.json();
+};
+
+export const getTransactionFromFilter = async ({
+  title,
+  from,
+  to,
+}: {
+  title?: string;
+  from?: Date;
+  to?: Date;
+}): Promise<Transaction[]> => {
+  const prepareQuery = new URL(`${MONEY_TRACKER_API}transaction/`);
+  const preparedFrom =
+    from?.toISOString() || new Date(2022, 5).getAbsMonth("begin").toISOString();
+  const preparedTo =
+    to?.toISOString() || new Date().getAbsMonth("end").toISOString();
+  prepareQuery.pathname += title
+    ? `title/${title}`
+    : `${preparedFrom}/${preparedTo}`;
+  if (title && from !== to)
+    prepareQuery.search = new URLSearchParams({
+      from: preparedFrom,
+      to: preparedTo,
+    }).toString();
+
+  const transactions = await fetch(prepareQuery.toString());
+  return await transactions.json();
 };

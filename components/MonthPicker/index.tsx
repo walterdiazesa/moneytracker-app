@@ -9,10 +9,11 @@ const index = () => {
 
   const formattedDate = useMemo(
     () =>
-      Intl.DateTimeFormat("es", {
+      selectedDate.format({
         year: "numeric",
         month: "long",
-      }).format(selectedDate),
+        firstUpperCase: true,
+      }),
     [selectedDate]
   );
 
@@ -31,7 +32,7 @@ const index = () => {
           width={24}
           height={24}
         />
-        {`${formattedDate.charAt(0).toUpperCase()}${formattedDate.slice(1)}`}
+        {formattedDate}
         <ChevronRightIcon
           onClick={() =>
             setSelectedDate({

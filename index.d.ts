@@ -7,6 +7,9 @@ declare global {
     getAbsMonth(type: "begin" | "end"): Date;
     diff(date: Date, unit: "year" | "day"): number;
     toISOString(): DateCaster<string>;
+    format(
+      options: Intl.DateTimeFormatOptions & { firstUpperCase?: boolean }
+    ): string;
   }
 
   declare interface Console {

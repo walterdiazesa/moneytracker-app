@@ -19,3 +19,13 @@ export type Transaction = {
   categoryId: number;
   category: Category;
 };
+
+export type ExpenseHistory = Record<
+  DateCaster<string>,
+  {
+    categoryId: Category["id"];
+    _sum: {
+      amount: Transaction["amount"];
+    };
+  }[]
+>;
