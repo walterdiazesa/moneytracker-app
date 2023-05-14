@@ -1,10 +1,10 @@
 export const mountScreenOrientationEvents = (cb: () => void) => {
   const orientationChangeRef = () => cb();
-  document.addEventListener("orientationchange", orientationChangeRef);
+  window.screen.orientation.addEventListener("change", orientationChangeRef);
   return orientationChangeRef;
 };
 export const unmountScreenOrientationEvents = (
   orientationChangeRef: () => void
 ) => {
-  document.removeEventListener("orientationchange", orientationChangeRef);
+  window.screen.orientation.removeEventListener("change", orientationChangeRef);
 };

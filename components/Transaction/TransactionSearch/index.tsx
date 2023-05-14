@@ -21,13 +21,13 @@ const TransactionSearch = () => {
         <input
           id="search-from"
           type="date"
-          className="mx-1 max-h-min w-12 rounded-md px-1 sm:min-w-fit"
+          className="mx-1 max-h-10 w-12 rounded-md px-1 sm:min-w-fit"
           max={new Date().toISOString().split("T")[0]}
         />
         <input
           id="search-to"
           type="date"
-          className="mr-1 max-h-min w-12 rounded-md px-1 sm:min-w-fit"
+          className="mr-1 max-h-10 w-12 rounded-md px-1 sm:min-w-fit"
           max={new Date().toISOString().split("T")[0]}
         />
         <button
