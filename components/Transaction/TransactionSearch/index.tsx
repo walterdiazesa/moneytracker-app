@@ -12,7 +12,7 @@ const TransactionSearch = () => {
   const [isLoading, setIsLoading] = useState(false);
   return (
     <>
-      <div className="m-4 flex">
+      <div className="flex p-4">
         <TextInput
           id="search-title"
           icon={MagnifyingGlassIcon}
@@ -21,13 +21,13 @@ const TransactionSearch = () => {
         <input
           id="search-from"
           type="date"
-          className="mx-1 w-9 rounded-md px-1 sm:min-w-fit"
+          className="mx-1 max-h-min w-12 rounded-md px-1 sm:min-w-fit"
           max={new Date().toISOString().split("T")[0]}
         />
         <input
           id="search-to"
           type="date"
-          className="mr-1 w-9 rounded-md px-1 sm:min-w-fit"
+          className="mr-1 max-h-min w-12 rounded-md px-1 sm:min-w-fit"
           max={new Date().toISOString().split("T")[0]}
         />
         <button

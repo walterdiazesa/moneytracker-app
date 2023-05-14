@@ -59,18 +59,21 @@ const ExpendedCategoryByWindow = () => {
 
   return (
     <div className="pt-8">
-      {isLoading && <Loader label="Obteniendo ventana de transacciones" />}
-      <BarChart
-        data={digestedHistoryExpense}
-        index="month"
-        categories={CATEGORIES.map(({ name }) => name)}
-        colors={CATEGORIES.map(({ appColor }) => appColor)}
-        valueFormatter={(val) => `$${currencyFormatter(val)}`}
-        stack={true}
-        showAnimation
-        showLegend={false}
-        showGridLines={true}
-      />
+      {isLoading ? (
+        <Loader label="Obteniendo ventana de transacciones" />
+      ) : (
+        <BarChart
+          data={digestedHistoryExpense}
+          index="month"
+          categories={CATEGORIES.map(({ name }) => name)}
+          colors={CATEGORIES.map(({ appColor }) => appColor)}
+          valueFormatter={(val) => `$${currencyFormatter(val)}`}
+          stack={true}
+          showAnimation
+          showLegend={false}
+          showGridLines={true}
+        />
+      )}
     </div>
   );
 };
