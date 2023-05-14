@@ -3,6 +3,12 @@ import { CATEGORIES, CATEGORIES_MAPPER } from "@/constants";
 import { TransactionContext } from "@/context";
 import { getExpenseHistoryWindow } from "@/fetch";
 import { currencyFormatter } from "@/utils";
+import {
+  mountScreenOrientationEvents,
+  unmountScreenOrientationEvents,
+  mountSwipeDownEvents,
+  unmountSwipeDownEvents,
+} from "@/utils/gestures/";
 import { getScreenType } from "@/utils/screen";
 import { BarChart } from "@tremor/react";
 import React, { useEffect, useMemo, useState } from "react";
@@ -14,13 +20,22 @@ const ExpendedCategoryByWindow = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    const cb = () => setTransactionContext({ expenseHistory: {} });
+    const orientationChangeRef = mountScreenOrientationEvents(cb);
+    const touchEndRef = mountSwipeDownEvents(cb);
+    return () => {
+      unmountSwipeDownEvents(touchEndRef);
+      unmountScreenOrientationEvents(orientationChangeRef);
+    };
+  }, []);
+
+  useEffect(() => {
     if (Object.keys(expenseHistory).length) return;
     setIsLoading(true);
     getExpenseHistoryWindow()
       .then((expenseHistory) => {
         setTransactionContext({ expenseHistory });
       })
-      .catch((error) => alert(JSON.stringify(error.toJSON())))
       .finally(() => setIsLoading(false));
   }, [expenseHistory]);
 

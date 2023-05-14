@@ -2,6 +2,7 @@ import { MONEY_TRACKER_API } from "@/constants";
 import { ExpenseHistory, Transaction } from "@/ts";
 import { DateCaster } from "@/ts/primitives";
 import { getScreenType } from "@/utils/screen";
+import { mutateTransactionFromList } from "@/utils/transaction";
 
 const transactionCache: Record<string, Transaction[]> =
   typeof localStorage !== "undefined" &&
@@ -59,22 +60,11 @@ export const revalidateCache = (
   const key = new Date(transaction.purchaseDate)
     .getAbsMonth("begin")
     .toISOString();
-  if (!transactionCache.hasOwnProperty(key)) {
+  if (!transactionCache.hasOwnProperty(key))
     transactionCache[key] = [transaction];
-  } else {
-    let updateTransaction = false;
-    transactionCache[key].splice(
-      transactionCache[key].findIndex(({ purchaseDate, id }) => {
-        if (transaction.id === id) updateTransaction = true;
-        return (
-          updateTransaction ||
-          new Date(purchaseDate) <= new Date(transaction.purchaseDate)
-        );
-      }),
-      Number(updateTransaction),
-      ...(onlyRemove ? [] : [transaction])
-    );
-  }
+  else
+    mutateTransactionFromList(transaction, transactionCache[key], onlyRemove);
+
   if (new Date().getAbsMonth("begin").toISOString() !== key)
     localStorage.setItem("transactionCache", JSON.stringify(transactionCache));
   return {
@@ -118,10 +108,9 @@ export const getTransactionFromFilter = async ({
   to,
 }: {
   title?: string;
-  from?: Date;
-  to?: Date;
+  from?: Date | null;
+  to?: Date | null;
 }): Promise<Transaction[]> => {
-  alert("getTransactionFromFilter!");
   const prepareQuery = new URL(`${MONEY_TRACKER_API}transaction/`);
   const preparedFrom =
     from?.toISOString() || new Date(2022, 5).getAbsMonth("begin").toISOString();
@@ -136,7 +125,6 @@ export const getTransactionFromFilter = async ({
       to: preparedTo,
     }).toString();
 
-  alert(`getTransactionFromFilter ${prepareQuery.toString()}`);
   const transactions = await fetch(prepareQuery.toString());
   return await transactions.json();
 };

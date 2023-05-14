@@ -3,6 +3,7 @@ import { CATEGORIES, MONEY_TRACKER_API } from "@/constants";
 import { TransactionContext } from "@/context";
 import { revalidateCache } from "@/fetch";
 import { Transaction } from "@/ts";
+import { mutateTransactionFromList } from "@/utils/transaction";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
@@ -13,8 +14,15 @@ type TransactionFormKey = Exclude<
 type TransactionOperation = "DELETE" | "PATCH" | "POST";
 
 const TransactionModal = () => {
-  const [{ lastSelectedMonth, isTransactionModalOpen }, setTransactionContext] =
-    TransactionContext.useStore((store) => store);
+  const [
+    {
+      lastSelectedMonth,
+      isTransactionModalOpen,
+      expenseHistory,
+      transactionsFromSearch,
+    },
+    setTransactionContext,
+  ] = TransactionContext.useStore((store) => store);
 
   const transKey = useRef(Date.now());
 
@@ -132,11 +140,55 @@ const TransactionModal = () => {
         transaction,
         deleteOperation
       );
+
+      const batchSetTransactionContext: Parameters<
+        typeof setTransactionContext
+      >[0] = {};
+
       if (mutatedMonth === lastSelectedMonth.getAbsMonth("begin").toISOString())
-        setTransactionContext({
-          lastTransactions: [...revalidateHelper],
-        });
-      setTransactionContext({ isTransactionModalOpen: false });
+        (batchSetTransactionContext["lastTransactions"] = [
+          ...revalidateHelper,
+        ]),
+          (batchSetTransactionContext["isTransactionModalOpen"] = false);
+
+      if (operation !== "POST" && transactionsFromSearch.length) {
+        batchSetTransactionContext["transactionsFromSearch"] = [
+          ...mutateTransactionFromList(
+            transaction,
+            transactionsFromSearch,
+            deleteOperation
+          ),
+        ];
+      }
+      const mutateExpenseHistory = expenseHistory[mutatedMonth];
+      if (mutateExpenseHistory) {
+        const mutatedExpenseHistoryContainsCategory =
+          mutateExpenseHistory.findIndex(
+            ({ categoryId }) => categoryId === transaction.categoryId
+          );
+        if (!mutatedExpenseHistoryContainsCategory)
+          mutateExpenseHistory.push({
+            categoryId: transaction.categoryId,
+            _sum: { amount: transaction.amount },
+          });
+        else {
+          const diff = +transaction.amount - +fromTransaction!.amount;
+          const currentCategorySum =
+            +mutateExpenseHistory[mutatedExpenseHistoryContainsCategory]._sum
+              .amount;
+          mutateExpenseHistory[
+            mutatedExpenseHistoryContainsCategory
+          ]._sum.amount = `${
+            currentCategorySum +
+            (operation === "PATCH"
+              ? diff
+              : +transaction.amount * (operation === "POST" ? 1 : -1))
+          }`;
+        }
+        batchSetTransactionContext["expenseHistory"] = { ...expenseHistory };
+      }
+
+      setTransactionContext(batchSetTransactionContext);
     } catch (error) {
       console.log(
         `${console.bgRed}${console.fgWhite} Error on Transaction/Modal/index.tsx > [submit] ${console.reset}`,
