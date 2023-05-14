@@ -19,7 +19,7 @@ const ExpendedCategoryByWindow = () => {
       .then((expenseHistory) => {
         setTransactionContext({ expenseHistory });
       })
-      .catch((error) => alert(JSON.stringify(error)))
+      .catch((error) => alert(JSON.stringify(error.toJSON())))
       .finally(() => setIsLoading(false));
   }, [expenseHistory]);
 

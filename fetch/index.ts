@@ -95,8 +95,13 @@ export const getTransactionFromMonth = async (
 };
 
 const getLastXMonthsPlusOne = () => {
-  if (window.screen.orientation.type.includes("portrait")) return -5;
-  console.log(window.screen, window.innerWidth, window.innerHeight);
+  alert(
+    `getLastXMonthsPlusOne window.screen.orientation ${JSON.stringify(
+      window.screen.orientation || {}
+    )}`
+  );
+  if (window.screen.orientation?.type.includes("portrait")) return -5;
+  alert(`${window.screen}, ${window.innerWidth}, ${window.innerHeight}`);
   return -5;
 };
 
@@ -133,6 +138,7 @@ export const getTransactionFromFilter = async ({
       to: preparedTo,
     }).toString();
 
+  alert(`getTransactionFromFilter ${prepareQuery.toString()}`);
   const transactions = await fetch(prepareQuery.toString());
   return await transactions.json();
 };

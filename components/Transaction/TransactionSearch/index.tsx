@@ -35,7 +35,6 @@ const TransactionSearch = () => {
         />
         <button
           onClick={() => {
-            alert("Click!");
             setIsLoading(true);
             const getSearchInput = (
               input: "title" | "to" | "from"
@@ -53,6 +52,7 @@ const TransactionSearch = () => {
               .then((transactions) =>
                 setTransactionContext({ transactionsFromSearch: transactions })
               )
+              .catch((reason) => alert(JSON.stringify(reason.toJSON())))
               .finally(() => setIsLoading(false));
           }}
           className="min-w-16 min-h-full rounded-md bg-white px-2.5"
