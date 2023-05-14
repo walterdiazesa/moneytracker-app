@@ -1,10 +1,20 @@
+import { getScreenType } from "../screen";
+
+const screenTypeRegister: { state: ReturnType<typeof getScreenType> } = {
+  state: "mobile-portrait",
+};
 export const mountScreenOrientationEvents = (cb: () => void) => {
-  const orientationChangeRef = () => cb();
-  window.screen.orientation.addEventListener("change", orientationChangeRef);
+  const orientationChangeRef = () => {
+    const screenType = getScreenType();
+    if (screenTypeRegister.state === screenType) return;
+    screenTypeRegister.state = screenType;
+    cb();
+  };
+  window.addEventListener("resize", orientationChangeRef, false);
   return orientationChangeRef;
 };
 export const unmountScreenOrientationEvents = (
   orientationChangeRef: () => void
 ) => {
-  window.screen.orientation.removeEventListener("change", orientationChangeRef);
+  window.removeEventListener("resize", orientationChangeRef, false);
 };
