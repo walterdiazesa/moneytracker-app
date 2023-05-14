@@ -96,12 +96,14 @@ export const getTransactionFromMonth = async (
 
 const getLastXMonthsPlusOne = () => {
   alert(
-    `getLastXMonthsPlusOne window.screen.orientation ${JSON.stringify(
-      window.screen.orientation || {}
-    )}`
+    `getLastXMonthsPlusOne portrait? ${
+      window.matchMedia("(orientation: portrait)").matches
+    }`
   );
   if (window.screen.orientation?.type.includes("portrait")) return -5;
-  alert(`${window.screen}, ${window.innerWidth}, ${window.innerHeight}`);
+  alert(
+    `${window.screen.width}, ${window.screen.availWidth}, ${window.screen.height}, ${window.innerWidth}, ${window.innerHeight}`
+  );
   return -5;
 };
 

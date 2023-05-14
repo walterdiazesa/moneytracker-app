@@ -36,10 +36,16 @@ const TransactionSearch = () => {
         <button
           onClick={() => {
             setIsLoading(true);
+            alert("Click!");
             const getSearchInput = (
               input: "title" | "to" | "from"
             ): HTMLInputElement =>
               document.getElementById(`search-${input}`) as HTMLInputElement;
+
+            alert(`getSearchInput("title"): ${getSearchInput("title")}`);
+            alert(`getSearchInput("from"): ${getSearchInput("from")}`);
+            alert(`getSearchInput("to"): ${getSearchInput("to")}`);
+
             getTransactionFromFilter({
               title: getSearchInput("title").value,
               ...(getSearchInput("from").innerText && {
