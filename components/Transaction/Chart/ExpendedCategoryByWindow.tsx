@@ -3,6 +3,7 @@ import { CATEGORIES, CATEGORIES_MAPPER } from "@/constants";
 import { TransactionContext } from "@/context";
 import { getExpenseHistoryWindow } from "@/fetch";
 import { currencyFormatter } from "@/utils";
+import { getScreenType } from "@/utils/screen";
 import { BarChart } from "@tremor/react";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -28,6 +29,7 @@ const ExpendedCategoryByWindow = () => {
       Object.entries(expenseHistory).map(([expenseMonth, sumByCat]) => ({
         month: new Date(expenseMonth).format({
           month: "short",
+          ...(getScreenType() !== "mobile-portrait" && { year: "2-digit" }),
           firstUpperCase: true,
         }),
         ...sumByCat.reduce((acc, { categoryId, _sum: { amount } }) => {

@@ -1,6 +1,7 @@
 import { MONEY_TRACKER_API } from "@/constants";
 import { ExpenseHistory, Transaction } from "@/ts";
 import { DateCaster } from "@/ts/primitives";
+import { getScreenType } from "@/utils/screen";
 
 const transactionCache: Record<string, Transaction[]> =
   typeof localStorage !== "undefined" &&
@@ -94,20 +95,17 @@ export const getTransactionFromMonth = async (
   );
 };
 
-const getLastXMonthsPlusOne = () => {
-  const isPortrait = window.matchMedia("(orientation: portrait)").matches;
-  if (isPortrait) return -5;
-  alert(
-    `${window.screen.width}, ${window.screen.availWidth}, ${window.screen.height}, ${window.innerWidth}, ${window.innerHeight}`
-  );
-  if (window.innerWidth < 1000) return -8;
-  return -11;
+const historyWindowBaseOfScreenSize = () => {
+  const screenType = getScreenType();
+  if (screenType === "mobile-portrait") return -5;
+  if (screenType === "mobile-landscape") return -8;
+  return -12;
 };
 
 export const getExpenseHistoryWindow = async (): Promise<ExpenseHistory> => {
   const expenseHistoryResponse = await fetch(
     `${MONEY_TRACKER_API}transaction/expenses/${new Date()
-      .change("month", getLastXMonthsPlusOne())
+      .change("month", historyWindowBaseOfScreenSize())
       .getAbsMonth("begin")
       .toISOString()}/${new Date().getAbsMonth("end").toISOString()}`
   );

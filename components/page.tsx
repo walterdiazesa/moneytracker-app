@@ -16,7 +16,7 @@ const Page = ({ title, children, className }: Props) => {
         </Head>
       )}
 
-      <main className="mx-auto max-w-screen-md px-safe sm:pb-0">
+      <main className="mx-auto max-w-screen-xl px-safe sm:pb-0 md:px-4 lg:px-16 xl:px-safe">
         <div {...(className && { className })}>{children}</div>
       </main>
 
