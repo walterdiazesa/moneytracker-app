@@ -33,7 +33,7 @@ const TransactionSearch = () => {
           placeholder=""
           maxDate={new Date()}
         />
-        <button
+        <div
           onClick={() => {
             setIsLoading(true);
             const getSearchInput = (
@@ -54,10 +54,10 @@ const TransactionSearch = () => {
               )
               .finally(() => setIsLoading(false));
           }}
-          className="min-w-16 min-h-full rounded-md bg-white px-2.5"
+          className="min-w-16 flex min-h-full items-center justify-center rounded-md bg-white px-2.5"
         >
           <MagnifyingGlassIcon className="h-4 w-4 text-gray-400" />
-        </button>
+        </div>
       </div>
       {isLoading && <Loader label="Obteniendo transacciones filtradas" />}
       {transactionsFromSearch.map((transaction) => (

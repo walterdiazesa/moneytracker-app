@@ -14,6 +14,7 @@ const ExpendedCategoryByWindow = () => {
 
   useEffect(() => {
     if (Object.keys(expenseHistory).length) return;
+    setIsLoading(true);
     getExpenseHistoryWindow()
       .then((expenseHistory) => {
         setTransactionContext({ expenseHistory });

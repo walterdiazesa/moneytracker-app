@@ -94,10 +94,16 @@ export const getTransactionFromMonth = async (
   );
 };
 
+const getLastXMonthsPlusOne = () => {
+  if (window.screen.orientation.type.includes("portrait")) return -5;
+  console.log(window.screen, window.innerWidth, window.innerHeight);
+  return -5;
+};
+
 export const getExpenseHistoryWindow = async (): Promise<ExpenseHistory> => {
   const expenseHistoryResponse = await fetch(
     `${MONEY_TRACKER_API}transaction/expenses/${new Date()
-      .change("month", -5)
+      .change("month", getLastXMonthsPlusOne())
       .getAbsMonth("begin")
       .toISOString()}/${new Date().getAbsMonth("end").toISOString()}`
   );
