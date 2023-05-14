@@ -4,13 +4,7 @@ import TransactionSearch from "@/components/Transaction/TransactionSearch";
 import { useEffect } from "react";
 
 const History = () => {
-  useEffect(() => {
-    window.screen.orientation.addEventListener("change", (ev) => {
-      alert(
-        `width: ${window.screen.width}, availW: ${window.screen.availWidth}, height: ${window.screen.height}`
-      );
-    });
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <Page title="Historial" className="pb-20">
