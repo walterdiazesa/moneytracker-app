@@ -27,9 +27,9 @@
     }
   ],
   "start_url": "/?source=pwa",
-  "background_color": "#ff0000",
+  "background_color": "#919be0",
   "orientation": "portrait",
   "display": "standalone",
   "scope": "/",
-  "theme_color": "#ff0000"
+  "theme_color": "#919be0"
 }

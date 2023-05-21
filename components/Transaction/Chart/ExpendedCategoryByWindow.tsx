@@ -63,6 +63,7 @@ const ExpendedCategoryByWindow = () => {
         <Loader label="Obteniendo ventana de transacciones" />
       ) : (
         <BarChart
+          id="category-window"
           data={digestedHistoryExpense}
           index="month"
           categories={CATEGORIES.map(({ name }) => name)}

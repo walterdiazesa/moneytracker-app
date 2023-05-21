@@ -38,7 +38,7 @@ const MonthOverview = () => {
 
   return (
     <div className="px-8">
-      <div className="mb-3 w-full rounded-md bg-blue-500 p-2">
+      <div className="mb-3 w-full rounded-md bg-theme-main p-2">
         <p className="text-xs">Ahorro este mes</p>
         <p>
           {remaining < 0 && "-"}${Math.abs(remaining)}

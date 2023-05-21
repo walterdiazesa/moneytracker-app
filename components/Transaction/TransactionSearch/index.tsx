@@ -17,17 +17,18 @@ const TransactionSearch = () => {
           id="search-title"
           icon={MagnifyingGlassIcon}
           placeholder="Título o lugar..."
+          className="tremor-input"
         />
         <input
           id="search-from"
           type="date"
-          className="mx-1 max-h-10 w-12 rounded-md px-1 sm:min-w-fit"
+          className="mx-1 max-h-10 w-12 rounded-md px-1 sm:min-w-fit input flex justify-center"
           max={new Date().toISOString().split("T")[0]}
         />
         <input
           id="search-to"
           type="date"
-          className="mr-1 max-h-10 w-12 rounded-md px-1 sm:min-w-fit"
+          className="mr-1 max-h-10 w-12 rounded-md px-1 sm:min-w-fit input flex justify-center"
           max={new Date().toISOString().split("T")[0]}
         />
         <button
@@ -52,9 +53,9 @@ const TransactionSearch = () => {
               )
               .finally(() => setIsLoading(false));
           }}
-          className="min-w-16 min-h-full rounded-md bg-white px-2.5"
+          className="min-w-16 min-h-full rounded-md bg-theme-action px-2.5 hover:bg-theme-action-dark"
         >
-          <MagnifyingGlassIcon className="h-4 w-4 text-gray-400" />
+          <MagnifyingGlassIcon className="h-4 w-4 text-white" />
         </button>
       </div>
       {isLoading && <Loader label="Obteniendo transacciones filtradas" />}

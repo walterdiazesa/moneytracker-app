@@ -13,12 +13,12 @@ const BottomNav = () => {
   );
 
   return (
-    <nav className="fixed bottom-0 w-full border-t bg-zinc-100 pb-safe dark:border-zinc-800 dark:bg-zinc-900">
+    <nav className="fixed bottom-0 w-full border-t border-zinc-800 bg-theme-main-light pb-safe">
       <div className="mx-auto flex h-16 max-w-md items-center justify-around px-6">
         <Item href="/">
           <ListBulletIcon width={24} height={24} />
         </Item>
-        <div className="flex -translate-y-1/3 flex-col items-center justify-center rounded-md bg-blue-500 p-4">
+        <div className="flex -translate-y-1/3 flex-col items-center justify-center rounded-md bg-theme-action p-4 hover:bg-theme-action-dark">
           <PlusIcon
             onClick={() =>
               setTransactionContext({ isTransactionModalOpen: true })

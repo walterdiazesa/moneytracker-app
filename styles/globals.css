@@ -3,10 +3,125 @@
 @tailwind utilities;
 
 body {
-	@apply min-h-screen select-none bg-zinc-50 text-zinc-900 antialiased p-safe dark:bg-zinc-900 dark:text-zinc-50;
+  @apply bg-theme-dark min-h-screen select-none text-zinc-50 antialiased p-safe;
 
-	/* PWA enhancements */
-	-webkit-overflow-scrolling: touch;
-	-webkit-tap-highlight-color: transparent;
-	-webkit-touch-callout: none;
+  -webkit-overflow-scrolling: touch;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
+
+.input {
+  @apply border border-transparent bg-theme-input ring-0 hover:border hover:border-theme-main-ex-light;
+}
+.tremor-input {
+  @apply input pl-2 [&>input]:!font-normal [&>input]:!text-white;
+}
+input[type="date"],
+input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+#search-from::-webkit-inner-spin-button,
+#search-to::-webkit-inner-spin-button,
+#search-from::-webkit-calendar-picker-indicator,
+#search-to::-webkit-calendar-picker-indicator {
+  /* display: none;
+    -webkit-appearance: none; */
+  margin: 0;
+}
+#search-from::-webkit-datetime-edit,
+#search-to::-webkit-datetime-edit {
+  display: none;
+}
+
+#category-window .recharts-wrapper {
+  margin-left: -5px;
+}
+/* #region [Dialog modal info] */
+.recharts-tooltip-wrapper > div {
+  @apply bg-theme-main border-theme-main-light;
+}
+.recharts-tooltip-wrapper > div > :first-child {
+  @apply border-theme-main-ex-light;
+}
+.recharts-tooltip-wrapper > div > :first-child > p {
+  @apply text-white;
+}
+.recharts-tooltip-wrapper > div > :nth-child(2) div > p,
+.recharts-tooltip-wrapper > div > div > div > p {
+  @apply text-zinc-300;
+}
+.recharts-tooltip-wrapper > div > :nth-child(2) div > div > p,
+.recharts-tooltip-wrapper > div > div > div > div > p {
+  @apply text-white font-normal;
+}
+/* #endregion [Dialog modal info] */
+
+/* #region [Category Mapper] */
+path[name="🃏 Miscelánea"] {
+  fill: #eee0dd;
+}
+.recharts-tooltip-wrapper span.shrink-0.bg-stone-500 {
+  background-color: #eee0dd;
+}
+path[name="🥖 Alimentos"] {
+  fill: #f9ce58;
+}
+.recharts-tooltip-wrapper span.shrink-0.bg-yellow-500 {
+  background-color: #f9ce58;
+}
+path[name="🍣 Restaurante"] {
+  fill: #f99558;
+}
+.recharts-tooltip-wrapper span.shrink-0.bg-orange-500 {
+  background-color: #f99558;
+}
+path[name="🏋️‍♂️ Gimnasio"] {
+  fill: #f958a6;
+}
+.recharts-tooltip-wrapper span.shrink-0.bg-pink-500 {
+  background-color: #f958a6;
+}
+path[name="🧼 Belleza"] {
+  fill: #c8f958;
+}
+.recharts-tooltip-wrapper span.shrink-0.bg-lime-500 {
+  background-color: #c8f958;
+}
+path[name="🍾 Salidas"] {
+  fill: #58f9ec;
+}
+.recharts-tooltip-wrapper span.shrink-0.bg-cyan-500 {
+  background-color: #58f9ec;
+}
+path[name="🏂 Experiencias"] {
+  fill: #4169e1;
+}
+.recharts-tooltip-wrapper span.shrink-0.bg-blue-500 {
+  background-color: #4169e1;
+}
+path[name="🚈 Transporte"] {
+  fill: #74747e;
+}
+.recharts-tooltip-wrapper span.shrink-0.bg-gray-500 {
+  background-color: #74747e;
+}
+path[name="🛍 Ropa"] {
+  fill: #e1415b;
+}
+.recharts-tooltip-wrapper span.shrink-0.bg-rose-500 {
+  background-color: #e1415b;
+}
+path[name="🏠 Hospedaje"] {
+  fill: #e1a641;
+}
+.recharts-tooltip-wrapper span.shrink-0.bg-amber-500 {
+  background-color: #e1a641;
+}
+path[name="💸 Income"] {
+  fill: #157811;
+}
+.recharts-tooltip-wrapper span.shrink-0.bg-emerald-500 {
+  background-color: #157811;
+}
+/* #endregion [Category Mapper] */

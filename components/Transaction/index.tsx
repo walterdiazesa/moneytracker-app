@@ -15,7 +15,7 @@ const index = ({ transaction }: { transaction: Transaction }) => {
         setTransactionContext({ isTransactionModalOpen: { transaction } })
       }
     >
-      <div className="my-2 flex w-full justify-between rounded-md bg-blue-500 p-2">
+      <div className="my-2 flex w-full justify-between rounded-md bg-theme-main p-2">
         <div className="flex truncate">
           <div
             data-icon={transaction.category.name.split(" ")[0]}

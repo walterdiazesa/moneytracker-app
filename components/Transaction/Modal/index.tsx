@@ -205,7 +205,7 @@ const TransactionModal = () => {
 
   return (
     <div
-      className={`fixed z-50 h-full w-full bg-red-600 transition-transform duration-200 ${
+      className={`fixed z-50 h-full w-full transition-transform duration-200 ${
         isTransactionModalOpen ? "translate-y-0" : "translate-y-full"
       } flex flex-col justify-between bg-theme-dark px-8 py-16`}
     >
@@ -220,11 +220,11 @@ const TransactionModal = () => {
         <input
           id="title"
           placeholder="Título"
-          className="mb-2 w-full rounded-md px-2 py-1"
+          className="mb-2 w-full rounded-md px-2 py-1 input"
         />
         <select
           id="categoryId"
-          className="my-2 w-full appearance-none rounded-md px-2 py-1"
+          className="my-2 w-full appearance-none rounded-md px-2 py-1 input"
         >
           {CATEGORIES.map(({ id, name }) => (
             <option value={id} key={id}>
@@ -236,16 +236,16 @@ const TransactionModal = () => {
           id="purchaseDate"
           placeholder="purchaseDate"
           type="datetime-local"
-          className="my-2 min-w-[calc(100%-16px)] rounded-md py-1 px-2"
+          className="my-2 min-w-[calc(100%-16px)] rounded-md py-1 px-2 input"
         />
         <input
           id="from"
           placeholder="from"
-          className="my-2 w-full rounded-md px-2 py-1"
+          className="my-2 w-full rounded-md px-2 py-1 input"
         />
         <select
           id="type"
-          className="my-2 w-full appearance-none rounded-md px-2 py-1"
+          className="my-2 w-full appearance-none rounded-md px-2 py-1 input"
         >
           <option value="minus">Gasto</option>
           <option value="plus">Ingreso</option>
@@ -268,10 +268,10 @@ const TransactionModal = () => {
         />
         <button
           disabled={!!isMutatingTransaction}
-          className={`my-2 flex w-full items-center justify-center rounded-md bg-blue-500 py-1.5 ${
+          className={`my-2 flex w-full items-center justify-center rounded-md bg-theme-action py-1.5 ${
             isMutatingTransaction && isMutatingTransaction !== "DELETE"
-              ? "bg-sky-400"
-              : "hover:bg-blue-600"
+              ? "bg-theme-action-light"
+              : "hover:bg-theme-action-dark"
           }`}
           onClick={() => submitTransaction()}
         >

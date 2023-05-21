@@ -19,7 +19,7 @@ const index = () => {
 
   return (
     <div className="flex w-full items-center justify-center py-4 px-8">
-      <div className="flex w-full justify-around rounded-md bg-blue-500 py-4">
+      <div className="flex w-full justify-around rounded-md bg-theme-main py-4">
         <ChevronLeftIcon
           onClick={() =>
             setSelectedDate({
