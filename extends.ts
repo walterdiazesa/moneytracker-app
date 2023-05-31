@@ -40,7 +40,7 @@ Date.prototype.diff = function (date, unit) {
     case "year":
       return new Date(diff_ms).getUTCFullYear() - 1970;
     case "day":
-      return (diff_ms / 1000 / 60 / 60 / 24) | 0;
+      return Math.floor(diff_ms / 1000 / 60 / 60 / 24);
   }
 };
 
