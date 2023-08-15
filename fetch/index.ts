@@ -80,7 +80,10 @@ export const getTransactionFromMonth = async (
     fetch(
       `${MONEY_TRACKER_API}transaction/${date
         .getAbsMonth("begin")
-        .toISOString()}/${date.getAbsMonth("end").toISOString()}`
+        .toISOString()}/${date.getAbsMonth("end").toISOString()}`,
+      {
+        credentials: "include",
+      }
     )
   );
 };
@@ -97,7 +100,10 @@ export const getExpenseHistoryWindow = async (): Promise<ExpenseHistory> => {
     `${MONEY_TRACKER_API}transaction/expenses/${new Date()
       .change("month", historyWindowBaseOfScreenSize())
       .getAbsMonth("begin")
-      .toISOString()}/${new Date().getAbsMonth("end").toISOString()}`
+      .toISOString()}/${new Date().getAbsMonth("end").toISOString()}`,
+    {
+      credentials: "include",
+    }
   );
   return await expenseHistoryResponse.json();
 };
@@ -125,6 +131,6 @@ export const getTransactionFromFilter = async ({
       to: preparedTo,
     }).toString();
 
-  const transactions = await fetch(prepareQuery.toString());
+  const transactions = await fetch(prepareQuery.toString(), { credentials: "include", });
   return await transactions.json();
 };

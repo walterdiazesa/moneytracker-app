@@ -130,6 +130,7 @@ const TransactionModal = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include",
           ...(!deleteOperation && {
             body: JSON.stringify(transactionPayload),
           }),
