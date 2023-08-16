@@ -1,7 +1,7 @@
 import Spinner from "@/components/Icons/Spinner";
 import { CATEGORIES, MONEY_TRACKER_API } from "@/constants";
 import { TransactionContext } from "@/context";
-import { revalidateCache } from "@/fetch";
+import { getJWT, revalidateCache } from "@/fetch";
 import { Transaction } from "@/ts";
 import { mutateTransactionFromList } from "@/utils/transaction";
 import { TrashIcon } from "@heroicons/react/24/outline";
@@ -122,6 +122,7 @@ const TransactionModal = () => {
       : "POST";
     try {
       setIsMutatingTransaction(operation);
+      const jwt = await getJWT();
       const res = await fetch(
         `${MONEY_TRACKER_API}transaction/${fromTransaction?.id || ""}`,
         {
@@ -129,6 +130,7 @@ const TransactionModal = () => {
           mode: "cors",
           headers: {
             "Content-Type": "application/json",
+            ...(jwt && { Authorization: `Bearer ${jwt}` }),
           },
           credentials: "include",
           ...(!deleteOperation && {
@@ -202,7 +204,10 @@ const TransactionModal = () => {
       );
       if (error instanceof Response)
         alert(
-          JSON.stringify({ status: error.status, statusText: error.statusText })
+          JSON.stringify({
+            status: error.status,
+            statusText: (await error.json())?.error ?? error.statusText,
+          })
         );
       else
         alert(

@@ -131,6 +131,14 @@ export const getTransactionFromFilter = async ({
       to: preparedTo,
     }).toString();
 
-  const transactions = await fetch(prepareQuery.toString(), { credentials: "include", });
+  const transactions = await fetch(prepareQuery.toString(), {
+    credentials: "include",
+  });
   return await transactions.json();
+};
+
+export const getJWT = async (): Promise<string | null> => {
+  const res = await fetch("/api/auth/jwt");
+  if (res.status !== 200) return null;
+  return (await res.json()).token as string;
 };
