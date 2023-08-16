@@ -1,4 +1,5 @@
 import type { AppProps } from "next/app";
+import { SessionProvider } from "next-auth/react"
 import { TransactionContext } from "@/context";
 import Meta from "@/components/meta";
 import "@/styles/globals.css";
@@ -14,14 +15,16 @@ const font = Roboto({
   display: "block",
 });
 
-const App = ({ Component, pageProps }: AppProps) => {
+const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
   return (
     <div className={`${font.className}`}>
-      <TransactionContext.Provider>
-        <Meta />
-        <TransactionModal />
-        <Component {...pageProps} />
-      </TransactionContext.Provider>
+      <SessionProvider session={session}>
+        <TransactionContext.Provider>
+          <Meta />
+          <TransactionModal />
+          <Component {...pageProps} />
+        </TransactionContext.Provider>
+      </SessionProvider>
     </div>
   );
 };

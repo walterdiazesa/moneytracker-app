@@ -13,6 +13,7 @@
 		"@tremor/react": "2.0.2",
 		"array.prototype.groupby": "1.1.0",
 		"next": "13.2.4",
+		"next-auth": "^4.23.1",
 		"next-pwa": "^5.5.2",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"

@@ -136,6 +136,8 @@ const TransactionModal = () => {
           }),
         }
       );
+      // Check for write permission
+      if ([401, 403].includes(res.status)) throw res;
       const transaction: Transaction = await res.json();
       const { mutatedMonth, transactions: revalidateHelper } = revalidateCache(
         transaction,
@@ -198,7 +200,17 @@ const TransactionModal = () => {
           error,
         }
       );
-      alert(JSON.stringify(error));
+      if (error instanceof Response)
+        alert(
+          JSON.stringify({ status: error.status, statusText: error.statusText })
+        );
+      else
+        alert(
+          JSON.stringify(
+            error,
+            Object.getOwnPropertyNames(error).filter((key) => key !== "stack")
+          )
+        );
     } finally {
       setIsMutatingTransaction(false);
     }

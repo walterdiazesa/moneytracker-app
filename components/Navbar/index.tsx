@@ -2,15 +2,35 @@ import {
   ListBulletIcon,
   ChartBarIcon,
   PlusIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
 import Item from "./Item";
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import { TransactionContext } from "@/context";
+import {
+  mountScreenOrientationEvents,
+  mountSwipeDownEvents,
+  unmountSwipeDownEvents,
+  unmountScreenOrientationEvents,
+} from "@/utils/gestures";
+import { getScreenType } from "@/utils/screen";
 
 const BottomNav = () => {
   const [, setTransactionContext] = TransactionContext.useStore(
     (store) => store["isTransactionModalOpen"]
   );
+
+  const [showAuthTab, setShowAuthTab] = useState(false);
+
+  useEffect(() => {
+    const cb = () => setShowAuthTab(getScreenType() === "mobile-landscape");
+    const orientationChangeRef = mountScreenOrientationEvents(cb);
+    const touchEndRef = mountSwipeDownEvents(cb);
+    return () => {
+      unmountSwipeDownEvents(touchEndRef);
+      unmountScreenOrientationEvents(orientationChangeRef);
+    };
+  }, []);
 
   return (
     <nav className="fixed bottom-0 w-full border-t border-zinc-800 bg-theme-main-light pb-safe">
@@ -30,6 +50,11 @@ const BottomNav = () => {
         <Item href="/history">
           <ChartBarIcon width={20} height={20} />
         </Item>
+        {showAuthTab && (
+          <Item href="/auth">
+            <UserIcon width={20} height={20} />
+          </Item>
+        )}
       </div>
     </nav>
   );
