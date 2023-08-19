@@ -45,3 +45,10 @@ So this app is basically
 [MoneyTracker-Demo-Desktop-PWA.webm](https://github.com/walterdiazesa/moneytracker-api/assets/58494087/b225ace7-19bc-42e2-9ecd-fe213f41e6f1)
 
 [MoneyTracker-Demo-IPhone-PWA.webm](https://github.com/walterdiazesa/moneytracker-api/assets/58494087/e328d2ce-474a-42ea-bcbf-fd5160d581c8)
+
+# About IDs
+
+For the nature of the app it's expected to have many records of the different expenses, to improve performance:
+
+- `ULID` is used for manually created records
+- `rfc822msgid` for records coming directly from Gmail, the ID is following the `RFC 822 specification`, so it's sanitized by removing the `<` and `>` encapsulation block, and reverse the host and id logic from `id@host` to `host@id`
