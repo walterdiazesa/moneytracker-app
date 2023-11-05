@@ -20,16 +20,7 @@ const Auth = () => {
         </button>
       ) : (
         <div className="my-auto text-center">
-          <p
-            onClick={() => {
-              navigator.share({
-                title: "Rust Senior Developer",
-                url: "http://localhost:3000/works/1t-Rust_Senior_Developer",
-                text: "Mira este trabajo en TakeOn",
-              });
-            }}
-            className="text-theme-action-light mb-2"
-          >
+          <p className="text-theme-action-light mb-2">
             Only WhiteListed users are able to log in.
           </p>
           <button
