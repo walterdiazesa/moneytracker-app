@@ -29,7 +29,7 @@ Date.prototype.getAbsMonth = function (type) {
           this.getFullYear(),
           this.getMonth(),
           1,
-          0 + (process.env.UTC_OFFSET ?? 0),
+          0 + (process.env.UTC_OFFSET ? +process.env.UTC_OFFSET : 0),
           0,
           0,
           0
@@ -41,7 +41,7 @@ Date.prototype.getAbsMonth = function (type) {
           this.getFullYear(),
           this.getMonth() + 1,
           0,
-          23 + (process.env.UTC_OFFSET ?? 0),
+          23 + (process.env.UTC_OFFSET ? +process.env.UTC_OFFSET : 0),
           59,
           59,
           999
