@@ -25,11 +25,27 @@ Date.prototype.getAbsMonth = function (type) {
   switch (type) {
     case "begin":
       return new Date(
-        Date.UTC(this.getFullYear(), this.getMonth(), 1, 0, 0, 0, 0)
+        Date.UTC(
+          this.getFullYear(),
+          this.getMonth(),
+          1,
+          0 + (process.env.UTC_OFFSET ?? 0),
+          0,
+          0,
+          0
+        )
       );
     case "end":
       return new Date(
-        Date.UTC(this.getFullYear(), this.getMonth() + 1, 0, 23, 59, 59, 999)
+        Date.UTC(
+          this.getFullYear(),
+          this.getMonth() + 1,
+          0,
+          23 + (process.env.UTC_OFFSET ?? 0),
+          59,
+          59,
+          999
+        )
       );
   }
 };
