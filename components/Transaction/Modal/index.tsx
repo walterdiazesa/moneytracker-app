@@ -326,7 +326,6 @@ const TransactionModal = () => {
                 .split("@")
                 .reverse()
                 .join("@")}`}
-              target="_blank"
             >
               <ArrowTopRightOnSquareIcon className="mr-2 h-4 w-4" />
               Ver en Gmail
