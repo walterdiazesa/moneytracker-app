@@ -4,8 +4,11 @@ import { TransactionContext } from "@/context";
 import { getJWT, revalidateCache } from "@/fetch";
 import { Transaction } from "@/ts";
 import { mutateTransactionFromList } from "@/utils/transaction";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+  ArrowTopRightOnSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type TransactionFormKey = Exclude<
   keyof Transaction,
@@ -308,34 +311,49 @@ const TransactionModal = () => {
           type="button"
           value="Cancelar"
           disabled={!!isMutatingTransaction}
-          className="my-2 w-full rounded-md bg-gray-400 py-1.5 hover:bg-gray-500"
+          className="my-2 w-full rounded-md bg-gray-400 py-1.5 hover:bg-gray-500 cursor-pointer"
           onClick={() =>
             setTransactionContext({ isTransactionModalOpen: false })
           }
         />
       </div>
       {fromTransaction && (
-        <button
-          disabled={!!isMutatingTransaction}
-          className={`mb-8 flex w-full items-center justify-center rounded-md py-1.5 ${
-            isMutatingTransaction && isMutatingTransaction === "DELETE"
-              ? "bg-red-300"
-              : "bg-red-400 hover:bg-red-500"
-          }`}
-          onClick={() => submitTransaction(true)}
-        >
-          {isMutatingTransaction && isMutatingTransaction === "DELETE" ? (
-            <>
-              <Spinner className="mr-2 h-4 w-4 text-white" />
-              Eliminando...
-            </>
-          ) : (
-            <>
-              <TrashIcon className="mr-2 h-4 w-4 text-white" />
-              Eliminar
-            </>
+        <div>
+          {fromTransaction.id?.includes("@") && (
+            <a
+              className="flex text-gray-400 hover:text-gray-500 items-center justify-center mb-4 w-full rounded-md bg-gray-200 py-1.5 hover:bg-gray-300"
+              href={`https://mail.google.com/mail/u/0/#search/rfc822msgid:${fromTransaction.id
+                .split("@")
+                .reverse()
+                .join("@")}`}
+              target="_blank"
+            >
+              <ArrowTopRightOnSquareIcon className="mr-2 h-4 w-4" />
+              Ver en Gmail
+            </a>
           )}
-        </button>
+          <button
+            disabled={!!isMutatingTransaction}
+            className={`mb-8 flex w-full items-center justify-center rounded-md py-1.5 ${
+              isMutatingTransaction && isMutatingTransaction === "DELETE"
+                ? "bg-red-300"
+                : "bg-red-400 hover:bg-red-500"
+            }`}
+            onClick={() => submitTransaction(true)}
+          >
+            {isMutatingTransaction && isMutatingTransaction === "DELETE" ? (
+              <>
+                <Spinner className="mr-2 h-4 w-4 text-white" />
+                Eliminando...
+              </>
+            ) : (
+              <>
+                <TrashIcon className="mr-2 h-4 w-4 text-white" />
+                Eliminar
+              </>
+            )}
+          </button>
+        </div>
       )}
     </div>
   );
