@@ -339,7 +339,7 @@ const TransactionModal = () => {
                   );
                 navigator.clipboard
                   .writeText(search)
-                  .then(() => (window.location.href = "googlegmail://search"));
+                  .then(() => (window.location.href = "googlegmail://"));
               }}
             >
               <ArrowTopRightOnSquareIcon className="mr-2 h-4 w-4" />
