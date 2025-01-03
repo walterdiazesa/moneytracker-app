@@ -320,25 +320,41 @@ const TransactionModal = () => {
       {fromTransaction && (
         <div>
           {fromTransaction.id?.includes("@") && (
-            <button
-              type="button"
-              className="flex text-gray-400 hover:text-gray-500 items-center justify-center mb-4 w-full rounded-md bg-gray-200 py-1.5 hover:bg-gray-300"
-              onClick={() => {
-                /* const ref = `https://mail.google.com/mail/u/0/#search/rfc822msgid:${fromTransaction.id
+            <>
+              <button
+                type="button"
+                className="flex text-gray-400 hover:text-gray-500 items-center justify-center mb-4 w-full rounded-md bg-gray-200 py-1.5 hover:bg-gray-300"
+                onClick={() => {
+                  /* const ref = `https://mail.google.com/mail/u/0/#search/rfc822msgid:${fromTransaction.id
                   .split("@")
                   .reverse()
                   .join("@")}`; */
-                const mailRef = `googlegmail:///search/rfc822msgid:${fromTransaction.id
-                  .split("@")
-                  .reverse()
-                  .join("@")}`;
-                alert(mailRef);
-                window.location.href = mailRef;
-              }}
-            >
-              <ArrowTopRightOnSquareIcon className="mr-2 h-4 w-4" />
-              Ver en Gmail
-            </button>
+                  const mailRef = `googlegmail:///search/rfc822msgid:${fromTransaction.id
+                    .split("@")
+                    .reverse()
+                    .join("@")}`;
+                  window.location.href = mailRef;
+                }}
+              >
+                <ArrowTopRightOnSquareIcon className="mr-2 h-4 w-4" />
+                Ver en Gmail
+              </button>
+              <div>
+                <input type="text" name="tempgmaillink" />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const link = document.querySelector(
+                      "input[name=tempgmaillink]"
+                    ) as HTMLInputElement;
+                    alert(link.value);
+                    window.location.href = link.value;
+                  }}
+                >
+                  OpenTemp
+                </button>
+              </div>
+            </>
           )}
           <button
             disabled={!!isMutatingTransaction}
