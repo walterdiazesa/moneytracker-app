@@ -328,12 +328,11 @@ const TransactionModal = () => {
                   .split("@")
                   .reverse()
                   .join("@")}`; */
-                const mailRef = `googlegmail:///search/${encodeURIComponent(
-                  `rfc822msgid:${fromTransaction.id
-                    .split("@")
-                    .reverse()
-                    .join("@")}`
-                )}`;
+                const mailRef = `googlegmail:///search/rfc822msgid:${fromTransaction.id
+                  .split("@")
+                  .reverse()
+                  .join("@")}`;
+                alert(mailRef);
                 window.location.href = mailRef;
               }}
             >
