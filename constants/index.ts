@@ -1,7 +1,7 @@
 export const MONEY_TRACKER_API = process.env.NEXT_PUBLIC_API_URL;
 
-export const MONTHLY_SAVING_GOAL = 1600;
-export const MINIMUM_MONTHLY_INCOME = 3720; // 2250 + (770 * 2) - 25  - 45;
+export const MONTHLY_SAVING_GOAL = 1000;
+export const MINIMUM_MONTHLY_INCOME = 2250;
 
 export const CATEGORIES = [
   { id: 1, name: "🃏 Miscelánea", color: "EEE0DD", appColor: "stone" },

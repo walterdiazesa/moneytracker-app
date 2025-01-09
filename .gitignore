@@ -10,3 +10,5 @@ node_modules
 # Generated via next-pwa
 **/public/workbox**
 **/public/sw**
+
+agricola_promo.json
